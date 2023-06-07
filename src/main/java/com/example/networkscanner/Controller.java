@@ -7,6 +7,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+import java.net.UnknownHostException;
+
 public class Controller {
 
     @FXML
@@ -32,11 +34,17 @@ public class Controller {
     @FXML
     private void initialize() {
         scanService = new ScanService();
-        scanButton.setOnAction(event -> handleScanButtonAction());
+        scanButton.setOnAction(event -> {
+            try {
+                handleScanButtonAction();
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @FXML
-    private void handleScanButtonAction() {
+    private void handleScanButtonAction() throws UnknownHostException {
         resultArea.clear();
 
         String ipRange = ipRangeField.getText().trim();
@@ -48,13 +56,22 @@ public class Controller {
             return;
         }
 
-        Task<Void> scanTask = scanService.startScan(ipRange, portRangeInput, threadsInput, serviceInfoCheckBox.isSelected(), this::appendResult);
+        // Проверка ввода
+        try {
+            InputValidator.validateIpRange(ipRange);
+            InputValidator.validatePortRangeInput(portRangeInput);
+            InputValidator.validateThreadsInput(threadsInput);
+        } catch (IllegalArgumentException | UnknownHostException e) {
+            appendResult("Error: " + e.getMessage());
+            return;
+        }
 
+        // Запуск задачи сканирования
+        Task<Void> scanTask = scanService.startScan(ipRange, portRangeInput, threadsInput, serviceInfoCheckBox.isSelected(), this::appendResult);
         scanTask.setOnSucceeded(e -> {
             double totalTime = scanService.getTotalTimeInSeconds();
             appendResult("Scan completed in " + String.format("%.2f", totalTime) + " seconds.");
         });
-
         scanTask.setOnFailed(e -> appendResult("Error: " + e.getSource().getException().getMessage()));
 
         new Thread(scanTask).start();
