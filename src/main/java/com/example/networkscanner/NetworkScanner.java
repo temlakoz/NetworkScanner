@@ -1,15 +1,11 @@
 package com.example.networkscanner;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import com.example.networkscanner.scanner.PortScanner;
 import com.example.networkscanner.scanner.ServiceVersionDetector;
 import javafx.concurrent.Task;
 
-import javafx.scene.control.TextArea;
 import java.net.InetAddress;
-import java.text.DecimalFormat;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -47,7 +43,7 @@ public class NetworkScanner {
         executor = Executors.newFixedThreadPool(threadsNum);
         startTime = System.currentTimeMillis();
 
-        Task<Void> scanTask = new Task<>() {
+        return new Task<>() {
             @Override
             protected Void call() {
                 Arrays.stream(addresses).forEach(address -> {
@@ -88,8 +84,6 @@ public class NetworkScanner {
                 resultHandler.handleResult("Error: " + getException().getMessage());
             }
         };
-
-        return scanTask;
     }
 
     public boolean isRunning() {
