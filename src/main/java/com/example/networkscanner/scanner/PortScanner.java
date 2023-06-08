@@ -22,7 +22,7 @@ public class PortScanner {
     public static String isPortOpen(String ip, int port, int timeout) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(ip, port), timeout);
-            return "Port " + port + " is open on " + ip;
+            return "Порт " + port + " открыт на " + ip;
         } catch (IOException e) {
             return "";
         }

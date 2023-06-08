@@ -44,7 +44,7 @@ public class ServiceVersionDetector {
      * @return название сервиса
      */
     public static String getServiceName(int port) {
-        return serviceMap.getOrDefault(port, "Unknown");
+        return serviceMap.getOrDefault(port, "Неизвестно");
     }
 
     /**
@@ -84,7 +84,10 @@ public class ServiceVersionDetector {
             // Unknown
         }
 
-        return serviceVersion.isEmpty() ? "Unknown" : serviceVersion;
+        String serviceName = " Служба: " + getServiceName(port);
+        serviceVersion = (!serviceVersion.isEmpty() ? (" Версия: " + serviceVersion) : "");
+
+        return serviceName + serviceVersion;
     }
 
     private ServiceVersionDetector() {}

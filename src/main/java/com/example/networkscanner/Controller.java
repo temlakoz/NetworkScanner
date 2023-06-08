@@ -60,16 +60,17 @@ public class Controller {
      */
     @FXML
     private void handleScanButtonAction() throws UnknownHostException {
-        resultArea.clear();
 
         String ipRange = ipRangeField.getText().trim();
         String portRangeInput = portRangeField.getText().trim();
         String threadsInput = threadsField.getText().trim();
 
         if (scanService.isRunning()) {
-            appendResult("Error: Previous scan is still running.");
+            appendResult("Ошибка: предыдущее сканирование ещё не завершено.");
             return;
         }
+
+        resultArea.clear();
 
         // Проверка ввода
         InetAddress[] addresses;
@@ -78,7 +79,7 @@ public class Controller {
             InputValidator.validatePortRangeInput(portRangeInput);
             InputValidator.validateThreadsInput(threadsInput);
         } catch (IllegalArgumentException | UnknownHostException e) {
-            appendResult("Error: " + e.getMessage());
+            appendResult("Ошибка: " + e.getMessage());
             return;
         }
 
@@ -86,7 +87,7 @@ public class Controller {
         Task<Void> scanTask = scanService.startScan(addresses, portRangeInput, threadsInput, serviceInfoCheckBox.isSelected(), this::appendResult);
         scanTask.setOnSucceeded(e -> {
             double totalTime = scanService.getTotalTimeInSeconds();
-            appendResult("Scan completed in " + String.format("%.2f", totalTime) + " seconds.");
+            appendResult("Сканирование завершено за " + String.format("%.2f", totalTime) + " секунд.");
         });
         scanTask.setOnFailed(e -> appendResult("Error: " + e.getSource().getException().getMessage()));
 

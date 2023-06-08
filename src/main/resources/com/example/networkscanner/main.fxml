@@ -15,14 +15,14 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: linear-gradient(to bottom, #ff7f50, #6a5acd);;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.networkscanner.Controller">
-   <children>
-       <CheckBox fx:id="serviceInfoCheckBox" contentDisplay="CENTER" layoutX="200.0" layoutY="120.0" text="Scan Service Info (-sV)" textFill="WHITE" />
+
+       <CheckBox fx:id="serviceInfoCheckBox" contentDisplay="CENTER" layoutX="200.0" layoutY="120.0" text="Сканировать информацию о версии (-sV)" textFill="WHITE" />
        <TextArea fx:id="resultArea" layoutX="28.0" layoutY="211.0" prefHeight="266.0" prefWidth="740.0">
          <effect>
             <Glow />
          </effect>
       </TextArea>
-       <Button fx:id="scanButton" layoutX="330.0" layoutY="167.0" prefHeight="35.0" prefWidth="119.0" text="SCAN" textFill="#6abc00">
+       <Button fx:id="scanButton" layoutX="330.0" layoutY="167.0" prefHeight="35.0" prefWidth="119.0" text="Начать" textFill="#6abc00">
          <font>
             <Font name="Arial Bold" size="13.0" />
          </font>
@@ -32,7 +32,7 @@
             <Font name="Tahoma Bold" size="24.0" />
          </font>
          <textFill>
-            <LinearGradient endX="1.0" endY="1.0">
+            <LinearGradient>
                <stops>
                   <Stop>
                      <color>
@@ -49,9 +49,9 @@
          </textFill>
       </Label>
       <ImageView fitHeight="53.0" fitWidth="80.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-         <image>
+
             <Image url="@logo.png" />
-         </image>
+
       </ImageView>
        <TextField fx:id="ipRangeField" layoutX="14.0" layoutY="76.0" prefHeight="26.0" prefWidth="346.0" promptText="IP Range:" style="-fx-max-width: 150px;;">
          <font>
@@ -61,5 +61,5 @@
        <TextField fx:id="portRangeField" layoutX="14.0" layoutY="117.0" prefHeight="26.0" prefWidth="293.0" promptText="Port Range:" style="-fx-border-radius: 12; -fx-max-width: 150px;" />
        <TextField fx:id="threadsField" layoutX="14.0" layoutY="158.0" prefHeight="26.0" prefWidth="293.0" promptText="Threads:" style="-fx-border-radius: 12; -fx-max-width: 150px;" />
 
-   </children>
+
 </AnchorPane>

@@ -17,7 +17,7 @@ public class InputValidator {
      */
     public static InetAddress[] validateIpRange(String ipRange) throws UnknownHostException {
         if (ipRange.isEmpty()) {
-            throw new IllegalArgumentException("IP range cannot be empty.");
+            throw new IllegalArgumentException("Поле IP адреса не может быть пустым.");
         }
 
         return InetAddress.getAllByName(ipRange);
@@ -30,12 +30,12 @@ public class InputValidator {
      */
     public static void validatePortRangeInput(String portRangeInput) {
         if (portRangeInput.isEmpty()) {
-            throw new IllegalArgumentException("Port range cannot be empty.");
+            throw new IllegalArgumentException("Поле портов не может быть пустым.");
         }
 
         String[] ports = portRangeInput.split("-");
         if (ports.length != 2) {
-            throw new IllegalArgumentException("Port range must be in the format start-end.");
+            throw new IllegalArgumentException("Поле порта должно быть заполнено в формате начало-конец.");
         }
 
         int startPort;
@@ -44,15 +44,15 @@ public class InputValidator {
             startPort = Integer.parseInt(ports[0]);
             endPort = Integer.parseInt(ports[1]);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Port numbers must be integers.");
+            throw new IllegalArgumentException("Номера портов должны быть числами.");
         }
 
         if (startPort < 1 || startPort > 65535 || endPort < 1 || endPort > 65535) {
-            throw new IllegalArgumentException("Port numbers must be in the range 1-65535.");
+            throw new IllegalArgumentException("Порты должны быть в диапазоне 1-65535.");
         }
 
         if (startPort > endPort) {
-            throw new IllegalArgumentException("The start port must be less than or equal to the end port.");
+            throw new IllegalArgumentException("Начальный порт должен быть меньше конечного.");
         }
     }
 
@@ -63,12 +63,12 @@ public class InputValidator {
      */
     public static void validateThreadsInput(String threadsInput) {
         if (threadsInput.isEmpty()) {
-            throw new IllegalArgumentException("Threads input cannot be empty.");
+            throw new IllegalArgumentException("Поле количества потоков не может быть пустым.");
         }
 
         int threads = Integer.parseInt(threadsInput);
         if (threads < 1) {
-            throw new IllegalArgumentException("The number of threads must be greater than 0.");
+            throw new IllegalArgumentException("Количество потоков должно быть больше чем 0.");
         }
     }
 
