@@ -5,12 +5,12 @@ import java.net.UnknownHostException;
 
 public class InputValidator {
 
-    public static void validateIpRange(String ipRange) throws UnknownHostException {
+    public static InetAddress[] validateIpRange(String ipRange) throws UnknownHostException {
         if (ipRange.isEmpty()) {
             throw new IllegalArgumentException("IP range cannot be empty.");
         }
-        // Проверка, что IP-адрес корректен
-        InetAddress.getAllByName(ipRange);
+
+        return InetAddress.getAllByName(ipRange);
     }
 
     public static void validatePortRangeInput(String portRangeInput) {
@@ -52,4 +52,8 @@ public class InputValidator {
             throw new IllegalArgumentException("The number of threads must be greater than 0.");
         }
     }
+
+    InputValidator() {
+    }
+
 }

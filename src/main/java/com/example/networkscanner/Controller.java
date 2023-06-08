@@ -7,6 +7,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Controller {
@@ -57,8 +58,9 @@ public class Controller {
         }
 
         // Проверка ввода
+        InetAddress[] addresses;
         try {
-            InputValidator.validateIpRange(ipRange);
+            addresses = InputValidator.validateIpRange(ipRange);
             InputValidator.validatePortRangeInput(portRangeInput);
             InputValidator.validateThreadsInput(threadsInput);
         } catch (IllegalArgumentException | UnknownHostException e) {
@@ -67,7 +69,7 @@ public class Controller {
         }
 
         // Запуск задачи сканирования
-        Task<Void> scanTask = scanService.startScan(ipRange, portRangeInput, threadsInput, serviceInfoCheckBox.isSelected(), this::appendResult);
+        Task<Void> scanTask = scanService.startScan(addresses, portRangeInput, threadsInput, serviceInfoCheckBox.isSelected(), this::appendResult);
         scanTask.setOnSucceeded(e -> {
             double totalTime = scanService.getTotalTimeInSeconds();
             appendResult("Scan completed in " + String.format("%.2f", totalTime) + " seconds.");

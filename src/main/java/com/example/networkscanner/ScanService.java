@@ -1,7 +1,8 @@
 package com.example.networkscanner;
 
 import javafx.concurrent.Task;
-import java.net.UnknownHostException;
+import java.net.InetAddress;
+
 
 public class ScanService {
 
@@ -15,10 +16,10 @@ public class ScanService {
         return networkScanner.getTotalTimeInSeconds();
     }
 
-    public Task<Void> startScan(String ipRange, String portRangeInput, String threadsInput, boolean getServiceInfo, ScanResultHandler resultHandler) {
+    public Task<Void> startScan(InetAddress[] addresses, String portRangeInput, String threadsInput, boolean getServiceInfo, ScanResultHandler resultHandler) {
         try {
-            return networkScanner.startScan(ipRange, portRangeInput, threadsInput, getServiceInfo, resultHandler);
-        } catch (NumberFormatException | UnknownHostException e) {
+            return networkScanner.startScan(addresses, portRangeInput, threadsInput, getServiceInfo, resultHandler);
+        } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }
     }
