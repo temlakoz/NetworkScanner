@@ -5,11 +5,9 @@ import com.example.networkscanner.scanner.ServiceVersionDetector;
 import javafx.concurrent.Task;
 
 import java.net.InetAddress;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 public class NetworkScanner {
 
@@ -21,17 +19,10 @@ public class NetworkScanner {
         final int endPort;
         final int threadsNum = Integer.parseInt(threadsInput.trim());
 
-        if (portRangeInput.contains("-")) {
-            String[] ports = portRangeInput.split("-");
-            startPort = Integer.parseInt(ports[0].trim());
-            endPort = Integer.parseInt(ports[1].trim());
-        } else if (!portRangeInput.isEmpty()) {
-            startPort = 1;
-            endPort = Integer.parseInt(portRangeInput.trim());
-        } else {
-            startPort = 1;
-            endPort = 65535;
-        }
+        String[] ports = portRangeInput.split("-");
+        startPort = Integer.parseInt(ports[0].trim());
+        endPort = Integer.parseInt(ports[1].trim());
+
 
         executor = Executors.newFixedThreadPool(threadsNum);
         startTime = System.currentTimeMillis();
@@ -39,36 +30,35 @@ public class NetworkScanner {
         return new Task<>() {
             @Override
             protected Void call() {
-                Arrays.stream(addresses).forEach(address -> {
+                for (InetAddress address : addresses) {
                     String finalAddress = address.getHostAddress();
-                    IntStream.rangeClosed(startPort, endPort).forEach(port -> {
+                    for (int port = startPort; port <= endPort; port++) {
+                        final int finalPort = port;
                         Runnable task = () -> {
-                            if (PortScanner.isPortOpen(finalAddress, port, 200)) {
-                                String result = "IP: " + finalAddress + ". Port " + port + " is open.";
-                                result += " Service: " + ServiceVersionDetector.getServiceName(port);
+                            if (PortScanner.isPortOpen(finalAddress, finalPort, 200)) {
+                                StringBuilder result = new StringBuilder();
+                                result.append("IP: ").append(finalAddress).append(". Port ").append(finalPort).append(" is open.");
+                                result.append(" Service: ").append(ServiceVersionDetector.getServiceName(finalPort));
                                 if (getServiceInfo) {
-                                    String version = ServiceVersionDetector.detectServiceVersion(finalAddress, port, 1000);
+                                    String version = ServiceVersionDetector.detectServiceVersion(finalAddress, finalPort, 1000);
                                     if (!Objects.equals(version, "Unknown")) {
-                                        result += ". Version: " + version;
+                                        result.append(". Version: ").append(version);
                                     }
                                 }
-                                resultHandler.handleResult(result);
+                                resultHandler.handleResult(result.toString());
                             }
                         };
                         executor.execute(task);
-                    });
-                });
-
+                    }
+                }
                 executor.shutdown();
                 try {
-                    // Wait until all tasks are finished.
                     while (!executor.isTerminated()) {
                         Thread.sleep(100);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-
                 return null;
             }
 
@@ -78,6 +68,7 @@ public class NetworkScanner {
             }
         };
     }
+
     public boolean isRunning() {
         return executor != null && !executor.isShutdown();
     }
