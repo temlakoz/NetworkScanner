@@ -1,10 +1,20 @@
+/**
+ * Этот класс предоставляет статические методы для проверки ввода пользователя.
+ * Он проверяет диапазоны IP-адресов, диапазоны портов и количество потоков.
+ */
 package com.example.networkscanner;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class InputValidator {
-
+    /**
+     * Этот метод проверяет диапазон IP-адресов на правильность.
+     *
+     * @param ipRange строка, содержащая диапазон IP-адресов
+     * @return массив IP-адресов, соответствующих диапазону
+     * @throws UnknownHostException если указанный диапазон IP-адресов неверен
+     */
     public static InetAddress[] validateIpRange(String ipRange) throws UnknownHostException {
         if (ipRange.isEmpty()) {
             throw new IllegalArgumentException("IP range cannot be empty.");
@@ -13,6 +23,11 @@ public class InputValidator {
         return InetAddress.getAllByName(ipRange);
     }
 
+    /**
+     * Этот метод проверяет диапазон портов на правильность.
+     *
+     * @param portRangeInput строка, содержащая диапазон портов
+     */
     public static void validatePortRangeInput(String portRangeInput) {
         if (portRangeInput.isEmpty()) {
             throw new IllegalArgumentException("Port range cannot be empty.");
@@ -41,7 +56,11 @@ public class InputValidator {
         }
     }
 
-
+    /**
+     * Этот метод проверяет количество потоков на правильность.
+     *
+     * @param threadsInput строка, содержащая количество потоков
+     */
     public static void validateThreadsInput(String threadsInput) {
         if (threadsInput.isEmpty()) {
             throw new IllegalArgumentException("Threads input cannot be empty.");
@@ -53,7 +72,5 @@ public class InputValidator {
         }
     }
 
-    InputValidator() {
-    }
-
+    private InputValidator() {}
 }

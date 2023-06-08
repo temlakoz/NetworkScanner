@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class NetworkScanner {
 
@@ -35,10 +36,10 @@ public class NetworkScanner {
                     for (int port = startPort; port <= endPort; port++) {
                         final int finalPort = port;
                         Runnable task = () -> {
-                            if (PortScanner.isPortOpen(finalAddress, finalPort, 200)) {
-                                StringBuilder result = new StringBuilder();
-                                result.append("IP: ").append(finalAddress).append(". Port ").append(finalPort).append(" is open.");
-                                result.append(" Service: ").append(ServiceVersionDetector.getServiceName(finalPort));
+                            StringBuilder result = new StringBuilder();
+                            String isPortOpen = PortScanner.isPortOpen(finalAddress, finalPort, 200);
+                            if (!isPortOpen.equals("")) {
+                                result.append(isPortOpen);
                                 if (getServiceInfo) {
                                     String version = ServiceVersionDetector.detectServiceVersion(finalAddress, finalPort, 1000);
                                     if (!Objects.equals(version, "Unknown")) {
@@ -53,10 +54,11 @@ public class NetworkScanner {
                 }
                 executor.shutdown();
                 try {
-                    while (!executor.isTerminated()) {
-                        Thread.sleep(100);
+                    if (!executor.awaitTermination(1, TimeUnit.HOURS)) {
+                        executor.shutdownNow();
                     }
                 } catch (InterruptedException e) {
+                    executor.shutdownNow();
                     Thread.currentThread().interrupt();
                 }
                 return null;

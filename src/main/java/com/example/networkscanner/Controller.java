@@ -1,3 +1,7 @@
+/**
+ * Этот класс служит контроллером для приложения Network Port Scanner.
+ * Он управляет взаимодействием между пользовательским интерфейсом и службой сканирования.
+ */
 package com.example.networkscanner;
 
 import javafx.concurrent.Task;
@@ -32,6 +36,10 @@ public class Controller {
 
     private ScanService scanService;
 
+    /**
+     * Этот метод инициализирует контроллер после загрузки всей разметки.
+     * Он создает новую службу сканирования и устанавливает обработчик событий для кнопки сканирования.
+     */
     @FXML
     private void initialize() {
         scanService = new ScanService();
@@ -44,6 +52,12 @@ public class Controller {
         });
     }
 
+    /**
+     * Этот метод обрабатывает действие кнопки сканирования.
+     * Он считывает и проверяет ввод, а затем запускает задачу сканирования.
+     *
+     * @throws UnknownHostException если указанный диапазон IP-адресов неверен
+     */
     @FXML
     private void handleScanButtonAction() throws UnknownHostException {
         resultArea.clear();
@@ -79,6 +93,12 @@ public class Controller {
         new Thread(scanTask).start();
     }
 
+    /**
+     * Этот метод добавляет сообщение в область вывода результата.
+     * Он гарантирует, что вызов происходит в потоке JavaFX, чтобы не было проблем с многопоточностью.
+     *
+     * @param result сообщение для добавления в область вывода
+     */
     private void appendResult(String result) {
         javafx.application.Platform.runLater(() -> resultArea.appendText(result + "\n"));
     }

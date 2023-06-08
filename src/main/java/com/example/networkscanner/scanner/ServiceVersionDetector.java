@@ -1,3 +1,6 @@
+/**
+ * Этот класс предоставляет методы для определения названия и версии сервиса, работающего на указанном порту.
+ */
 package com.example.networkscanner.scanner;
 
 import java.io.BufferedReader;
@@ -30,14 +33,28 @@ public class ServiceVersionDetector {
         serviceMap.put(3306, "MySQL");
         serviceMap.put(3389, "RDP");
         serviceMap.put(5432, "PostgreSQL");
+        serviceMap.put(8080, "HTTP");
         serviceMap.put(27017, "MongoDB");
-        // Add more services and their default ports as needed
     }
 
+    /**
+     * Возвращает название сервиса, связанного с указанным портом.
+     *
+     * @param port номер порта
+     * @return название сервиса
+     */
     public static String getServiceName(int port) {
         return serviceMap.getOrDefault(port, "Unknown");
     }
 
+    /**
+     * Определяет версию сервиса, работающего на указанном IP-адресе и порту.
+     *
+     * @param ipAddress IP-адрес для проверки
+     * @param port номер порта для проверки
+     * @param timeout время ожидания в миллисекундах
+     * @return версию сервиса или "Unknown", если версию определить не удалось
+     */
     public static String detectServiceVersion(String ipAddress, int port, int timeout) {
         String serviceVersion = "";
 

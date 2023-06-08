@@ -1,36 +1,32 @@
+/**
+ * Этот класс предоставляет метод для проверки открытости порта на конкретном IP-адресе и порту.
+ *
+ * @author Ваше_имя
+ */
 package com.example.networkscanner.scanner;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.concurrent.Callable;
 
-public class PortScanner implements Callable<String> {
+public class PortScanner {
 
-    private final String ip;
-    private final int port;
-
-    public PortScanner(String ip, int port) {
-        this.ip = ip;
-        this.port = port;
-    }
-
-    public static boolean isPortOpen(String ip, int port, int timeout) {
+    /**
+     * Проверяет, открыт ли порт на указанном IP-адресе.
+     *
+     * @param ip IP-адрес для проверки
+     * @param port номер порта для проверки
+     * @param timeout время ожидания в миллисекундах
+     * @return строку, указывающую, открыт ли порт, или пустую строку, если порт закрыт
+     */
+    public static String isPortOpen(String ip, int port, int timeout) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(ip, port), timeout);
-            return true;
+            return "Port " + port + " is open on " + ip;
         } catch (IOException e) {
-            return false;
+            return "";
         }
     }
 
-    @Override
-    public String call() throws Exception {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(ip, port), 200);
-            return "Port " + port + " is open on " + ip;
-        } catch (IOException e) {
-            return "Port " + port + " is closed on " + ip;
-        }
-    }
+    private PortScanner() {}
 }
