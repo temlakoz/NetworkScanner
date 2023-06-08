@@ -9,6 +9,7 @@ import com.example.networkscanner.scanner.ServiceVersionDetector;
 import javafx.concurrent.Task;
 
 import java.net.InetAddress;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,11 +22,11 @@ public class NetworkScanner {
     /**
      * Метод startScan запускает сканирование диапазона IP-адресов на указанный диапазон портов.
      *
-     * @param addresses Массив IP-адресов для сканирования.
+     * @param addresses      Массив IP-адресов для сканирования.
      * @param portRangeInput Строка с диапазоном портов для сканирования.
-     * @param threadsInput Строка с числом потоков для сканирования.
+     * @param threadsInput   Строка с числом потоков для сканирования.
      * @param getServiceInfo Флаг, указывающий, следует ли получать информацию о службах.
-     * @param resultHandler Обработчик результатов сканирования.
+     * @param resultHandler  Обработчик результатов сканирования.
      * @return Task<Void>, который при выполнении запускает сканирование.
      * @throws NumberFormatException если строки portRangeInput или threadsInput не могут быть преобразованы в числа.
      */
@@ -47,19 +48,7 @@ public class NetworkScanner {
                 for (InetAddress address : addresses) {
                     String finalAddress = address.getHostAddress();
                     for (int port = startPort; port <= endPort; port++) {
-                        final int finalPort = port;
-                        Runnable task = () -> {
-                            StringBuilder result = new StringBuilder();
-                            String isPortOpen = PortScanner.isPortOpen(finalAddress, finalPort, 200);
-                            if (!isPortOpen.equals("")) {
-                                result.append(isPortOpen);
-                                if (getServiceInfo) {
-                                    String version = ServiceVersionDetector.detectServiceVersion(finalAddress, finalPort, 1000);
-                                        result.append(version);
-                                }
-                                resultHandler.handleResult(result.toString());
-                            }
-                        };
+                        Runnable task = createScanTask(finalAddress, port, getServiceInfo, resultHandler);
                         executor.execute(task);
                     }
                 }
@@ -98,5 +87,31 @@ public class NetworkScanner {
      */
     public double getTotalTimeInSeconds() {
         return (System.currentTimeMillis() - this.startTime) / 1000.0;
+    }
+
+    /**
+     * Метод createScanTask создает задачу для сканирования одного порта на одном адресе.
+     *
+     * @param address        IP-адрес для сканирования.
+     * @param port           Порт для сканирования.
+     * @param getServiceInfo Флаг, указывающий, следует ли получать информацию о службах.
+     * @param resultHandler  Обработчик результатов сканирования.
+     * @return Runnable задачу, которую можно выполнить в отдельном потоке.
+     */
+    private Runnable createScanTask(String address, int port, boolean getServiceInfo, ScanResultHandler resultHandler) {
+        return () -> {
+            StringBuilder result = new StringBuilder();
+            String isPortOpen = PortScanner.isPortOpen(address, port, 200);
+            if (!isPortOpen.equals("")) {
+                result.append(isPortOpen);
+                if (getServiceInfo) {
+                    String version = ServiceVersionDetector.detectServiceVersion(address, port, 1000);
+                    if (!Objects.equals(version, "Unknown")) {
+                        result.append(version);
+                    }
+                }
+                resultHandler.handleResult(result.toString());
+            }
+        };
     }
 }
